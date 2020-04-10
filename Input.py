@@ -7,7 +7,7 @@ class get_key:
 
 		if OS=="linux":
 			self.call=get_key_linux()
-		elif OS=="windows":
+		elif OS=="win32":
 			self.call=get_key_windows()
 
 	def __call__(self):
@@ -58,7 +58,7 @@ def get_arrow_key(buffer):
 	while True:
 		x=getchx()
 		
-		if sys.platform=="windows":
+		if sys.platform=="win32":
 			if x==b"\x00":
 				x=getchx()
 				if x in whitelisted_keys.keys():
