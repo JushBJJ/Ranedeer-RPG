@@ -28,6 +28,7 @@ class Player:
             controls[n]()
 
         self.buffer.clear_buffer_line(1)
+        self.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press c to show controls")
         self.buffer.write_buffer_line(1, f"X: {self.x}\tY: {self.y}")
 
     def show_controls(self):
@@ -64,7 +65,7 @@ Other:
 
         object=self.map.check_position(x,y)
         self.buffer.clear_buffer_line(1)
-        
+
         if object in self.map.interactables.values():
             in_inventory, info=self.map.interact(x,y)
 
