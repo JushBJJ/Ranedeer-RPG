@@ -19,17 +19,22 @@ class Player:
         self.inventory={}
 
     def Move_Player(self, n):
+        reprint_top=False
+
         positions={0: self.up, 1: self.down, 2: self.left, 3: self.right}
         controls={4: self.interact, 5: self.show_inventory, 7:self.quit, 6:self.show_controls}
 
         if n in positions.keys():
             positions[n]()
         elif n in controls.keys():
-            controls[n]()
+            reprint_top=controls[n]()
 
         self.buffer.clear_buffer_line(1)
-        self.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press c to show controls")
         self.buffer.write_buffer_line(1, f"X: {self.x}\tY: {self.y}")
+
+        if reprint_top:
+            self.buffer.clear_buffer_line(0)
+            self.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press c to show controls")
 
     def show_controls(self):
         clear_screen()
@@ -52,7 +57,7 @@ Other:
         while True:
             if Input.get_c(self.buffer)==7:
                 self.map.draw_map()
-                return
+                return True
 
     def interact(self):
         x=self.x
@@ -92,7 +97,7 @@ Other:
         while True:
             if Input.get_c(self.buffer)==7:
                 self.map.draw_map()
-                return
+                return True
 
         # TODO Add equip
     

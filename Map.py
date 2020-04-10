@@ -157,5 +157,5 @@ class Map:
         self.cursor.pos(1, self.max_y)
         self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)
 
-        self.cursor.pos(1, self.max_y+2)
+        self.cursor.pos(1, self.max_y+1)
         self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)
