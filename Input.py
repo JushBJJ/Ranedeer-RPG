@@ -60,7 +60,7 @@ def get_c(buffer):
 	while True:
 		x=getchx()
 		buffer.clear_buffer_line(0)
-		buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press c to show controls")
+		buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press C to show controls")
 
 		if sys.platform=="win32":
 			if x==b"\x00":

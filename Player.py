@@ -34,7 +34,7 @@ class Player:
 
         if reprint_top:
             self.buffer.clear_buffer_line(0)
-            self.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press c to show controls")
+            self.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press C to show controls")
 
     def show_controls(self):
         clear_screen()
@@ -89,8 +89,7 @@ Other:
         self.cursor.pos(1,1)
 
         for item_num, name in enumerate(self.inventory):
-            name=name["Name"]
-            self.buffer.write(f"{item_num}: {name}\n")
+            self.buffer.write(f"{item_num}) {name}\n")
         
         self.buffer.write("Press Q to exit.")
 
@@ -114,6 +113,8 @@ Other:
             self.y-=1
             self.map.place_object(self.x, self.y, 2)
             self.map.place_object(self.x, last_y, object)
+        
+        self.last_face=0
 
     def down(self):
         object=self.map.check_position(self.x, self.y+1)
@@ -124,6 +125,8 @@ Other:
             self.y+=1
             self.map.place_object(self.x, self.y, 2)
             self.map.place_object(self.x, last_y, object)
+        
+        self.last_face=1
 
     def left(self):
         object=self.map.check_position(self.x-1, self.y)
@@ -134,6 +137,8 @@ Other:
             self.x-=1
             self.map.place_object(self.x, self.y, 2)
             self.map.place_object(last_x, self.y, object)
+        
+        self.last_face=2
 
     def right(self):
         object=self.map.check_position(self.x+1, self.y)
@@ -144,3 +149,5 @@ Other:
             self.x+=1
             self.map.place_object(self.x, self.y, 2)
             self.map.place_object(last_x, self.y, object)
+        
+        self.last_face=3

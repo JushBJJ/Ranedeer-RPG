@@ -97,8 +97,8 @@ class Map:
         self.items=interactable_objects()
     
     def interact(self, x,y):
-        z=check_position(x,y)
-        if z in self.items.keys():
+        z=self.check_position(x,y)
+        if z in self.items.interactables.keys():
             return self.items.interactables[z]()
 
     def place_object(self, x, y, id):
@@ -153,7 +153,7 @@ class Map:
             for x in range(self.max_x):
                 self.cursor.pos(x,y)
                 self.buffer.write(self.object_key(self.current_map[y][x]))
-        
+        self.place_object(10,10, 3)
         self.cursor.pos(1, self.max_y)
         self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)
 
