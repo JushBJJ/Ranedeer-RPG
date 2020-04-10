@@ -59,8 +59,7 @@ def get_c(buffer):
 	getchx=get_key()
 	while True:
 		x=getchx()
-		buffer.clear_buffer()
-		buffer.bottom_write("WASD or Arrow keys to move  |  Press C to show controls")
+		Buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press c to show controls")
 		
 		if sys.platform=="win32":
 			if x==b"\x00":
@@ -69,7 +68,6 @@ def get_c(buffer):
 					return whitelisted_keys[x]
 			else:
 				if x in whitelisted_keys.keys():
-					buffer.bottom_write(f"Key: {x}")
 					return whitelisted_keys[x]
 
 		elif sys.platform=="linux":

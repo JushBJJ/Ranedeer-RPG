@@ -27,7 +27,8 @@ class Player:
         elif n in controls.keys():
             controls[n]()
 
-        self.buffer.bottom_write(f"X: {self.x}\tY: {self.y}")
+        self.buffer.write_buffer_line(1, f"X: {self.x}\tY: {self.y}")
+        self.buffer.clear_buffer()
 
     def show_controls(self):
         clear_screen()
@@ -68,13 +69,13 @@ Other:
 
             if in_inventory:
                 if info["Name"] in self.inventory.keys():
-                    self.buffer.bottom_write("Item already in your inventory.")
+                    self.buffer.write_buffer_line(0, "Item already in your inventory.")
                 else:
                     self.inventory[info["Name"]]=info
                     self.map.remove_object(x,y)
-                    self.buffer.bottom_write("Collected Item.")
+                    self.buffer.write_buffer_line(0, "Collected Item.")
         else:
-            self.buffer.bottom_write("Nothing to interact.")
+            self.buffer.write_buffer_line(0, "Nothing to interact.")
 
     def show_inventory(self):
         clear_screen()

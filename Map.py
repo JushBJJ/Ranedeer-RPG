@@ -19,38 +19,36 @@ class Buffer:
         self.buffer=F
         self.buffer_X="\r"
         self.cursor=cursor
-        
+
+        self.buffers={}
+    
+    def save_buffer_line(self, x, y):
+        buffers_n=len(self.buffers)
+        next_line=str(buffers_n)
+
+        self.cursor.pos(x,y)
+        self.cursor.save_pos(next_line)
+        self.buffers[next_line]=""
+
+    def clear_buffer_line(self, line):
+        line=str(line)
+        self.cursor.load_pos(line)
+
+        for i in buffer[line]:
+            self.write(" ")
+
+        self.buffer[line]=""
+
+    def write_buffer_line(self, line, msg):
+        self.clear_buffer_line(line)
+        self.buffer[str(line)]=msg
+
+        self.cursor.load_pos(str(line))
+        self.write(msg)
+
     def write(self, x):
         self.buffer.write(x)
         self.buffer.flush()
-
-    def clear(self):
-        self.cursor.save_pos("last_pos")
-        self.cursor.load_pos("bottom")
-        
-        for i in self.buffer_X:
-            if i=="\n":
-                self.write("\n")
-            self.write(" ")
-
-        self.buffer_X="\r"
-        self.cursor.load_pos("last_pos")
-    
-    def clear_buffer(self):
-        self.buffer_X="\r"
-
-    def bottom_write(self, msg):
-        self.cursor.save_pos("last_pos")
-        self.cursor.load_pos("bottom")
-
-        temp=self.buffer_X
-        self.clear()
-
-        self.buffer_X=temp
-        self.buffer_X+="\n"+msg        
-        self.write(self.buffer_X)
-
-        self.cursor.load_pos("last_pos")
 
     def flush(self):
         self.buffer.flush()
@@ -105,13 +103,13 @@ class Map:
 
     def place_object(self, x, y, id):
         if id not in self.objects.values():
-            self.buffer.bottom_write(f"Invaild ID: {id}")
+            self.buffer.write_buffer_line(0, f"Invaild ID: {id}")
         elif x<self.max_x or y<self.max_y:
             self.cursor.pos(x,y)
             self.buffer.write(self.object_key(id))
             self.current_map[y][x]=id
         else:
-            self.buffer.bottom_write(f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
+            self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
 
     def check_position(self, x, y):
         return self.current_map[y][x]
@@ -120,7 +118,7 @@ class Map:
         if x<self.max_x or y<self.max_y:
             self.place_object(x,y, 0)
         else:
-            self.buffer.bottom_write(f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
+            self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
 
     def generate_map(self):
         # Generate Border
@@ -144,7 +142,7 @@ class Map:
         
     def object_key(self, id):
         if id not in self.objects.values():
-            self.buffer.bottom_write("Unable to return key value of id ", id)
+            self.buffer.write_buffer_line(0, "Unable to return key value of id ", id)
             return " "
         return list(self.objects.keys())[list(self.objects.values()).index(id)]
 
@@ -157,4 +155,7 @@ class Map:
                 self.buffer.write(self.object_key(self.current_map[y][x]))
         
         self.cursor.pos(1, self.max_y)
-        self.cursor.save_pos("bottom")
+        self.buffer.save_buffer_line(self.x, self.y)
+
+        self.cursor.pos(1, self.max_y+2)
+        self.buffer.save_buffer_line(self.x, self.y)
