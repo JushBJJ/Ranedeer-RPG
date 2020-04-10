@@ -10,7 +10,8 @@ ID 2: Player
 """
 
 def clear_screen():
-    subprocess.run("cls", shell=True)
+    OS=sys.platform
+    subprocess.run("cls" if OS=="Windows" else "clear", shell=True)
     Position.pos(1,1)
 
 class Buffer:
