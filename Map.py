@@ -34,14 +34,14 @@ class Buffer:
         line=str(line)
         self.cursor.load_pos(line)
 
-        for i in buffer[line]:
-            self.write(" ")
+        for i in self.buffers[line]:
+            self.write(" "*2)
 
-        self.buffer[line]=""
+        self.buffers[line]=""
 
     def write_buffer_line(self, line, msg):
         self.clear_buffer_line(line)
-        self.buffer[str(line)]=msg
+        self.buffers[str(line)]=msg
 
         self.cursor.load_pos(str(line))
         self.write(msg)
@@ -155,7 +155,7 @@ class Map:
                 self.buffer.write(self.object_key(self.current_map[y][x]))
         
         self.cursor.pos(1, self.max_y)
-        self.buffer.save_buffer_line(self.x, self.y)
+        self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)
 
         self.cursor.pos(1, self.max_y+2)
-        self.buffer.save_buffer_line(self.x, self.y)
+        self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)

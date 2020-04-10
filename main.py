@@ -18,7 +18,6 @@ if __name__=="__main__":
     player=Player.Player(Current_Map, Buffer, cur)
 
     Buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press c to show controls")
-    Buffer.clear_buffer()
 
     while True:
         player.Move_Player(Input.get_c(Buffer))

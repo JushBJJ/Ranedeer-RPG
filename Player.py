@@ -27,8 +27,8 @@ class Player:
         elif n in controls.keys():
             controls[n]()
 
+        self.buffer.clear_buffer_line(1)
         self.buffer.write_buffer_line(1, f"X: {self.x}\tY: {self.y}")
-        self.buffer.clear_buffer()
 
     def show_controls(self):
         clear_screen()
@@ -63,7 +63,8 @@ Other:
         elif self.last_face==3: x=self.x+1
 
         object=self.map.check_position(x,y)
-        self.buffer.clear()
+        self.buffer.clear_buffer_line(1)
+        
         if object in self.map.interactables.values():
             in_inventory, info=self.map.interact(x,y)
 
