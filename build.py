@@ -4,7 +4,7 @@ import sys
 
 run_flags=[
         "--name=Ranedeer-RPG",
-        "--windowed",
+        "--console",
         "--clean",
         "--onefile",
         "main.py",
