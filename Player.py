@@ -105,6 +105,8 @@ Other:
         sys.exit(0)
 
     def up(self):
+        # TODO Add a item only map to keep the contents of items
+
         object=self.map.check_position(self.x, self.y-1)
         if object in self.map.non_solid:
             last_y=self.y

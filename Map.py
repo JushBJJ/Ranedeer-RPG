@@ -89,7 +89,7 @@ class Map:
         
         self.objects={" ":0, "#": 1, "P": 2, "S": 3, "N": 4}
         self.interactables={"Wooden_Sword":3, "NPC":4}
-        self.non_solid={0, 3}
+        self.non_solid={0}
 
         self.cursor=cursor
         self.buffer=buffer
