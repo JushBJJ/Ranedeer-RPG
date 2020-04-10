@@ -85,9 +85,12 @@ def get_arrow_key(buffer):
 					if x in whitelisted_keys_linux.keys():
 						buffer.bottom_write(f"Key: {x}")
 						return whitelisted_keys_linux[x]
-						
+
 			elif x in whitelisted_keys_linux.keys():
 				buffer.bottom_write(f"Key: {x}")
 				return whitelisted_keys_linux[x]
+			elif x==113:
+				clear_screen()
+				exit()
 
             
