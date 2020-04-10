@@ -109,47 +109,35 @@ Other:
 
         object=self.map.check_position(self.x, self.y-1)
         if object in self.map.non_solid:
-            last_y=self.y
-
             self.map.remove_object(self.x, self.y)
             self.y-=1
             self.map.place_object(self.x, self.y, 2)
-            self.map.place_object(self.x, last_y, object)
         
         self.last_face=0
 
     def down(self):
         object=self.map.check_position(self.x, self.y+1)
         if object in self.map.non_solid:
-            last_y=self.y
-
             self.map.remove_object(self.x, self.y)
             self.y+=1
             self.map.place_object(self.x, self.y, 2)
-            self.map.place_object(self.x, last_y, object)
         
         self.last_face=1
 
     def left(self):
         object=self.map.check_position(self.x-1, self.y)
         if object in self.map.non_solid:
-            last_x=self.x
-
             self.map.remove_object(self.x, self.y)
             self.x-=1
             self.map.place_object(self.x, self.y, 2)
-            self.map.place_object(last_x, self.y, object)
         
         self.last_face=2
 
     def right(self):
         object=self.map.check_position(self.x+1, self.y)
         if object in self.map.non_solid:
-            last_x=self.x
-
             self.map.remove_object(self.x, self.y)
             self.x+=1
             self.map.place_object(self.x, self.y, 2)
-            self.map.place_object(last_x, self.y, object)
         
         self.last_face=3

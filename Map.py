@@ -108,6 +108,7 @@ class Map:
             self.cursor.pos(x,y)
             self.buffer.write(self.object_key(id))
             self.current_map[y][x]=id
+
         else:
             self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
 
@@ -117,6 +118,8 @@ class Map:
     def remove_object(self, x, y):
         if x<self.max_x or y<self.max_y:
             self.place_object(x,y, 0)
+            with open("yes.txt", "w") as f:
+                f.write(f"Removed Object in X: {x} Y: {y}\n")
         else:
             self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
 
@@ -153,7 +156,7 @@ class Map:
             for x in range(self.max_x):
                 self.cursor.pos(x,y)
                 self.buffer.write(self.object_key(self.current_map[y][x]))
-        self.place_object(10,10, 3)
+        
         self.cursor.pos(1, self.max_y)
         self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)
 
