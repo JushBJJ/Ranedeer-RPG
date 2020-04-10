@@ -19,38 +19,90 @@ class Buffer:
         self.buffer=F
         self.buffer_X="\r"
         self.cursor=cursor
-    
+        
     def write(self, x):
         self.buffer.write(x)
         self.buffer.flush()
 
     def clear(self):
+        self.cursor.save_pos("last_pos")
+        self.cursor.load_pos("bottom")
+        
+        for i in self.buffer_X:
+            if i=="\n":
+                self.write("\n")
+            self.write(" ")
+
+        self.buffer_X="\r"
+        self.cursor.load_pos("last_pos")
+    
+    def clear_buffer(self):
         self.buffer_X="\r"
 
     def bottom_write(self, msg):
-        self.buffer_X+="\n"+msg
         self.cursor.save_pos("last_pos")
         self.cursor.load_pos("bottom")
 
-        self.write(self.buffer_X+(" "*3))
-        self.flush()
+        temp=self.buffer_X
+        self.clear()
+
+        self.buffer_X=temp
+        self.buffer_X+="\n"+msg        
+        self.write(self.buffer_X)
 
         self.cursor.load_pos("last_pos")
 
     def flush(self):
         self.buffer.flush()
 
+class interactable_objects:
+    def __init__(self):
+        self.interactables={3:self.wooden_sword, 4:self.NPC}
+
+    def wooden_sword(self):
+        # 1=True
+        # 0=False
+
+        wooden_sword_details={
+            "Weapon":1,
+            "Equipable":1,
+            "Consumeable":0,
+            "Damage":10,
+            "Breakable":1,
+            "till_break":30,
+            "Name":"Wooden Sword"
+        }
+
+        return True, wooden_sword_details
+    
+    def NPC(self):
+        # TODO
+        return False, None
+    
 class Map:
     def __init__(self, cursor, buffer):
         self.max_x=50
         self.max_y=20
 
         # Map Array is in Y,X order
+        # Maximum of 87 objects
+
         self.current_map=np.zeros((self.max_y+1, self.max_x+1), dtype=np.int)
-        self.objects={" ":0, "#": 1, "P": 2}
+        
+        self.objects={" ":0, "#": 1, "P": 2, "S": 3, "N": 4}
+        self.interactables={"Wooden_Sword":3, "NPC":4}
+        self.non_solid={0, 3}
+
         self.cursor=cursor
         self.buffer=buffer
+
+        self.items=interactable_objects()
     
+    def interact(self, x,y):
+        z=check_position(x,y)
+        if z in self.items.keys():
+            return self.items.interactables[z]()
+
     def place_object(self, x, y, id):
         if id not in self.objects.values():
             self.buffer.bottom_write(f"Invaild ID: {id}")
@@ -97,6 +149,7 @@ class Map:
         return list(self.objects.keys())[list(self.objects.values()).index(id)]
 
     def draw_map(self):
+        clear_screen()
         self.cursor.pos(1,1)
         for y in range(self.max_y):
             for x in range(self.max_x):

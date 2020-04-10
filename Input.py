@@ -41,7 +41,7 @@ class get_key_windows:
 		import msvcrt
 		return msvcrt.getch()
 
-def get_arrow_key(buffer):
+def get_c(buffer):
 	whitelisted_keys={
         b"H": 0, b"P": 1, b"K": 2, b"M": 3, 
         b"w": 0, b"s": 1, b"a": 2, b"d": 3
@@ -52,28 +52,25 @@ def get_arrow_key(buffer):
 		119:0, 115:1, 97:2, 100:3
 	}
 
-	getchx=get_key()
-	buffer.clear()
+	other_controls={
+		ord("e"):4, ord("i"):5, ord("c"):6, ord("q"):7
+	}
 
+	getchx=get_key()
 	while True:
 		x=getchx()
+		buffer.clear_buffer()
+		buffer.bottom_write("WASD or Arrow keys to move  |  Press C to show controls")
 		
 		if sys.platform=="win32":
 			if x==b"\x00":
 				x=getchx()
 				if x in whitelisted_keys.keys():
-					buffer.bottom_write(f"Key: {x}")
 					return whitelisted_keys[x]
 			else:
-				
-				
 				if x in whitelisted_keys.keys():
 					buffer.bottom_write(f"Key: {x}")
 					return whitelisted_keys[x]
-
-				elif x==b"q":
-					clear_screen()
-					exit()
 
 		elif sys.platform=="linux":
 			x=ord(x)
@@ -83,14 +80,13 @@ def get_arrow_key(buffer):
 					x=ord(getchx())
 
 					if x in whitelisted_keys_linux.keys():
-						buffer.bottom_write(f"Key: {x}")
 						return whitelisted_keys_linux[x]
 
 			elif x in whitelisted_keys_linux.keys():
-				buffer.bottom_write(f"Key: {x}")
 				return whitelisted_keys_linux[x]
-			elif x==113:
-				clear_screen()
-				exit()
 
-            
+		if sys.platform=="linux" or sys.platform=="win32":
+			x=ord(x) if type(x)!=int else x
+
+			if x in other_controls.keys():
+				return other_controls[x]

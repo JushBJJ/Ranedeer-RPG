@@ -17,5 +17,6 @@ if __name__=="__main__":
 
     player=Player.Player(Current_Map, Buffer, cur)
 
+    Buffer.bottom_write("WASD or Arrow keys to move  |  Press c to show controls")
     while True:
-        player.Move_Player(Input.get_arrow_key(Buffer))
+        player.Move_Player(Input.get_c(Buffer))
