@@ -34,7 +34,7 @@ class Buffer:
         line=str(line)
         self.cursor.load_pos(line)
 
-        for i in self.buffers[line]:
+        for _ in self.buffers[line]:
             self.write(" "*2)
 
         self.buffers[line]=""
@@ -86,10 +86,11 @@ class Map:
         # Maximum of 87 objects
 
         self.current_map=np.zeros((self.max_y+1, self.max_x+1), dtype=np.int)
-        
+        self.item_map=np.zeros((self.max_y+1, self.max_x+1), dtype=np.int)
+
         self.objects={" ":0, "#": 1, "P": 2, "S": 3, "N": 4}
         self.interactables={"Wooden_Sword":3, "NPC":4}
-        self.non_solid={0}
+        self.non_solid={0, 3}
 
         self.cursor=cursor
         self.buffer=buffer
@@ -107,7 +108,12 @@ class Map:
         elif x<self.max_x or y<self.max_y:
             self.cursor.pos(x,y)
             self.buffer.write(self.object_key(id))
-            self.current_map[y][x]=id
+
+            if id==2:
+                self.current_map[y][x]=id
+            else:
+                self.item_map[y][x]=id
+                self.current_map[y][x]=id
 
         else:
             self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
@@ -117,9 +123,20 @@ class Map:
 
     def remove_object(self, x, y):
         if x<self.max_x or y<self.max_y:
-            self.place_object(x,y, 0)
-            with open("yes.txt", "w") as f:
-                f.write(f"Removed Object in X: {x} Y: {y}\n")
+            """
+            if object in x,y is 2
+                if object in x,y is in x,y
+                    place object from item_map
+            else
+                place object 0
+            """
+
+            if self.check_position(x,y)==2 and self.item_map[y][x]!=0:
+                self.place_object(x,y, self.item_map[y][x])
+            else:
+                self.place_object(x,y,0)
+                self.item_map[y][x]=0
+
         else:
             self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.max_x}\tMax Y: {self.max_y}")
 

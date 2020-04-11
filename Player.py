@@ -27,8 +27,7 @@ class Player:
         if n in positions.keys():
             self.last_face=n
             object=self.map.check_position(positions[n][0], positions[n][1])
-            self.buffer.write_buffer_line(0, str(object))
-
+            
             if object in self.map.non_solid:
                 self.map.remove_object(self.x, self.y)
                 self.x=positions[n][0]
