@@ -21,11 +21,21 @@ class Player:
     def Move_Player(self, n):
         reprint_top=False
 
-        positions={0: self.up, 1: self.down, 2: self.left, 3: self.right}
+        positions={0:(self.x, self.y-1), 1: (self.x, self.y+1), 2: (self.x-1, self.y), 3: (self.x+1,self.y)}
         controls={4: self.interact, 5: self.show_inventory, 7:self.quit, 6:self.show_controls}
-
+        
         if n in positions.keys():
-            positions[n]()
+            self.last_face=n
+            object=self.map.check_position(positions[n][0], positions[n][1])
+            self.buffer.write_buffer_line(0, str(object))
+
+            if object in self.map.non_solid:
+                self.map.remove_object(self.x, self.y)
+                self.x=positions[n][0]
+                self.y=positions[n][1]
+
+                self.map.place_object(self.x, self.y, 2)
+            
         elif n in controls.keys():
             reprint_top=controls[n]()
 
@@ -103,41 +113,3 @@ Other:
     def quit(self):
         clear_screen()
         sys.exit(0)
-
-    def up(self):
-        # TODO Add a item only map to keep the contents of items
-
-        object=self.map.check_position(self.x, self.y-1)
-        if object in self.map.non_solid:
-            self.map.remove_object(self.x, self.y)
-            self.y-=1
-            self.map.place_object(self.x, self.y, 2)
-        
-        self.last_face=0
-
-    def down(self):
-        object=self.map.check_position(self.x, self.y+1)
-        if object in self.map.non_solid:
-            self.map.remove_object(self.x, self.y)
-            self.y+=1
-            self.map.place_object(self.x, self.y, 2)
-        
-        self.last_face=1
-
-    def left(self):
-        object=self.map.check_position(self.x-1, self.y)
-        if object in self.map.non_solid:
-            self.map.remove_object(self.x, self.y)
-            self.x-=1
-            self.map.place_object(self.x, self.y, 2)
-        
-        self.last_face=2
-
-    def right(self):
-        object=self.map.check_position(self.x+1, self.y)
-        if object in self.map.non_solid:
-            self.map.remove_object(self.x, self.y)
-            self.x+=1
-            self.map.place_object(self.x, self.y, 2)
-        
-        self.last_face=3
