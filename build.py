@@ -13,7 +13,9 @@ run_flags=[
         "Player.py",
         "Position.py"
     ]
+
 if sys.platform=="linux":
+    run_flags.append("--strip")
     PyInstaller.__main__.run(run_flags)
 
 elif sys.platform=="win32":
