@@ -21,18 +21,21 @@ class Player:
     def Move_Player(self, n):
         reprint_top=False
 
-        positions={0:(self.x, self.y-1), 1: (self.x, self.y+1), 2: (self.x-1, self.y), 3: (self.x+1,self.y)}
+        positions={0:(self.x, self.y-1, "^"), 1: (self.x, self.y+1, "v"), 2: (self.x-1, self.y, "<"), 3: (self.x+1,self.y, ">")}
         controls={4: self.interact, 5: self.show_inventory, 7:self.quit, 6:self.show_controls}
         
         if n in positions.keys():
+            del self.map.objects[positions[self.last_face][2]]
             self.last_face=n
             object=self.map.check_position(positions[n][0], positions[n][1])
-            
+
             if object in self.map.non_solid:
                 self.map.remove_object(self.x, self.y)
+
                 self.x=positions[n][0]
                 self.y=positions[n][1]
-
+                self.map.objects[positions[self.last_face][2]]=2
+                
                 self.map.place_object(self.x, self.y, 2)
             
         elif n in controls.keys():

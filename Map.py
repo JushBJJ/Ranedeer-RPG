@@ -88,7 +88,7 @@ class Map:
         self.current_map=np.zeros((self.max_y+1, self.max_x+1), dtype=np.int)
         self.item_map=np.zeros((self.max_y+1, self.max_x+1), dtype=np.int)
 
-        self.objects={" ":0, "#": 1, "P": 2, "S": 3, "N": 4}
+        self.objects={" ":0, "#": 1, "^": 2, "S": 3, "N": 4}
         self.interactables={"Wooden_Sword":3, "NPC":4}
         self.non_solid={0, 3}
 
