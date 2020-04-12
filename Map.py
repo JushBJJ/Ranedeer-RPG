@@ -46,9 +46,9 @@ class Buffer:
         self.cursor.load_pos(str(line))
         self.write(msg)
 
-    def write(self, x):
+    def write(self, x, flush=True):
         self.buffer.write(x)
-        self.buffer.flush()
+        self.buffer.flush() if flush==True else None
 
     def flush(self):
         self.buffer.flush()
@@ -88,7 +88,7 @@ class Map:
         self.current_map=np.zeros((self.max_y+1, self.max_x+1), dtype=np.int)
         self.item_map=np.zeros((self.max_y+1, self.max_x+1), dtype=np.int)
 
-        self.objects={" ":0, "#": 1, "^": 2, "S": 3, "N": 4}
+        self.objects={".":0, "#": 1, "^": 2, "S": 3, "N": 4}
         self.interactables={"Wooden_Sword":3, "NPC":4}
         self.non_solid={0, 3}
 
@@ -107,7 +107,8 @@ class Map:
             self.buffer.write_buffer_line(0, f"Invaild ID: {id}")
         elif x<self.max_x or y<self.max_y:
             self.cursor.pos(x,y)
-            self.buffer.write(self.object_key(id))
+            self.buffer.write(self.object_key(id), flush=False)
+            self.buffer.flush()
 
             if id==2:
                 self.current_map[y][x]=id
@@ -162,10 +163,11 @@ class Map:
     def draw_map(self):
         clear_screen()
         self.cursor.pos(1,1)
-        for y in range(self.max_y):
-            for x in range(self.max_x):
-                self.cursor.pos(x,y)
-                self.buffer.write(self.object_key(self.current_map[y][x]))
+        for y in range(1,self.max_y):
+            for x in range(1,self.max_x):
+                self.buffer.write(self.object_key(self.current_map[y][x]), flush=False)
+            self.buffer.write("\n", flush=False)
+        self.buffer.flush()
         
         self.cursor.pos(1, self.max_y)
         self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)
