@@ -35,7 +35,7 @@ class Player:
                 self.x=positions[n][0]
                 self.y=positions[n][1]
                 self.map.objects[positions[self.last_face][2]]=2
-                
+
                 self.map.place_object(self.x, self.y, 2)
             
         elif n in controls.keys():
@@ -80,18 +80,28 @@ Other:
         elif self.last_face==2: x=self.x-1
         elif self.last_face==3: x=self.x+1
 
-        object=self.map.check_position(x,y)
+        object_on_top=self.map.item_map[self.y][self.x]
+        object=self.map.item_map[y][x]
         self.buffer.clear_buffer_line(1)
 
-        if object in self.map.interactables.values():
-            in_inventory, info=self.map.interact(x,y)
+        if object in self.map.interactables.values() or object_on_top in self.map.interactables.values():
+            if object_on_top in self.map.interactables.values():
+                in_inventory, info=self.map.interact(self.x, self.y)
+            else:
+                in_inventory, info=self.map.interact(x,y)
 
             if in_inventory:
                 if info["Name"] in self.inventory.keys():
                     self.buffer.write_buffer_line(0, "Item already in your inventory.")
                 else:
                     self.inventory[info["Name"]]=info
-                    self.map.remove_object(x,y)
+                    self.buffer.write_buffer_line(1, str(bool(object_on_top not in self.map.interactables.values())))
+
+                    if object_on_top not in self.map.interactables.values():
+                        self.map.remove_object(x,y)  
+                    else:
+                        self.map.item_map[self.y][self.x]=0
+
                     self.buffer.write_buffer_line(0, "Collected Item.")
         else:
             self.buffer.write_buffer_line(0, "Nothing to interact.")

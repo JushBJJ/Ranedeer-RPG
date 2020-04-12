@@ -98,7 +98,7 @@ class Map:
         self.items=interactable_objects()
     
     def interact(self, x,y):
-        z=self.check_position(x,y)
+        z=self.item_map[y][x]
         if z in self.items.interactables.keys():
             return self.items.interactables[z]()
 
@@ -123,13 +123,6 @@ class Map:
 
     def remove_object(self, x, y):
         if x<self.max_x or y<self.max_y:
-            """
-            if object in x,y is 2
-                if object in x,y is in x,y
-                    place object from item_map
-            else
-                place object 0
-            """
 
             if self.check_position(x,y)==2 and self.item_map[y][x]!=0:
                 self.place_object(x,y, self.item_map[y][x])
