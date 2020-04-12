@@ -27,25 +27,25 @@ class Player:
         if n in positions.keys():
             del self.map.objects[positions[self.last_face][2]]
             self.last_face=n
+            self.map.objects[positions[self.last_face][2]]=2
+
             object=self.map.check_position(positions[n][0], positions[n][1])
 
             if object in self.map.non_solid:
-                self.map.remove_object(self.x, self.y)
-
                 self.x=positions[n][0]
                 self.y=positions[n][1]
-                self.map.objects[positions[self.last_face][2]]=2
 
                 self.map.place_object(self.x, self.y, 2)
+            else:
+                self.map.place_object(self.x, self.y, 2)
+                return # More cheaper
             
         elif n in controls.keys():
             reprint_top=controls[n]()
 
-        self.buffer.clear_buffer_line(1)
         self.buffer.write_buffer_line(1, f"X: {self.x}\tY: {self.y}")
 
         if reprint_top:
-            self.buffer.clear_buffer_line(0)
             self.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press C to show controls")
 
     def show_controls(self):
