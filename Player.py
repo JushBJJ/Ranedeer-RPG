@@ -4,8 +4,8 @@ from Map import clear_screen
 
 class Player:
     def __init__(self, map_, buffer, cursor):
-        self.x=20
-        self.y=10
+        self.x=map_.rooms[0]["x"]
+        self.y=map_.rooms[0]["y"]
 
         self.last_face=0
 
@@ -70,7 +70,7 @@ Other:
 
         while True:
             if Input.get_c(self.buffer)==7:
-                self.map.draw_map()
+                self.map.draw_map(self.map.map)
                 return True
 
     def interact(self):
@@ -119,7 +119,7 @@ Other:
 
         while True:
             if Input.get_c(self.buffer)==7:
-                self.map.draw_map()
+                self.map.draw_map(self.map.map)
                 return True
 
         # TODO Add equip
