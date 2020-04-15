@@ -19,7 +19,7 @@ def main():
     player=RPG_Player.Player(map_, Buffer, cur)
 
     map_.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press C to show controls")
-    map_.place_object(10,10, 3)
+    map_.place_random_item()
     while True:
         player.Move_Player(RPG_Input.get_c(Buffer))
 

@@ -100,7 +100,7 @@ class Map:
 
         for y in range(room_y, room_y+room.shape[0]):
             for x in range(room_x, room_x+room.shape[1]):
-                if self.map[y][x]==self.floor:
+                if self.map[y,x]==self.floor:
                     return False
 
         for y in range(room_y, room_y+room.shape[0]):
@@ -108,7 +108,7 @@ class Map:
             for x in range(room_x, room_x+room.shape[1]):
                 if j==1 and i==1:
                     self.rooms[id]={"x":x,"y":y}
-                self.map[y][x]=room[j][i]
+                self.map[y,x]=room[j,i]
                 i+=1
             j+=1
         return True
@@ -151,38 +151,66 @@ class Map:
 
             last_room=room
     def interact(self, x,y):
-        z=self.item_map[y][x]
+        z=self.item_map[y,x]
         if z in self.items.interactables.keys():
             return self.items.interactables[z]()
 
     def place_object(self, x, y, id):
         if id not in self.objects.values():
             self.buffer.write_buffer_line(0, f"Invaild ID: {id}")
+
+            import time
+            time.sleep(5)
         elif x<self.width or y<self.height:
             self.cursor.pos(x,y)
             self.buffer.write(self.object_key(id), flush=False)
             self.buffer.flush()
 
             if id==2:
-                self.map[y][x]=id
+                self.map[y,x]=id
             else:
-                self.item_map[y][x]=id
-                self.map[y][x]=id
+                self.item_map[y,x]=id
+                self.map[y,x]=id
 
         else:
             self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.width}\tMax Y: {self.height}")
 
+    def place_item(self, id, x=0, y=0, random_position=False):
+        while True:
+            if random_position==True:
+                x=random.randint(0, self.map.shape[1]-1)
+                y=random.randint(0, self.map.shape[0]-1)
+
+            if self.map[y,x]!=self.floor:
+                continue
+        
+            self.place_object(x,y, id)
+            break
+    
+    def place_random_item(self, x=0, y=0, random_position=True):
+        while True:
+            if random_position==True:
+                x=random.randint(0, self.map.shape[1]-1)
+                y=random.randint(0, self.map.shape[0]-1)
+            
+            if self.map[y,x]!=self.floor:
+                continue
+
+            item=random.choice(list(self.items.interactables.keys()))
+            self.place_object(x,y, item)
+            break
+
     def check_position(self, x, y):
-        return self.map[y][x]
+        return self.map[y,x]
 
     def remove_object(self, x, y):
         if x<self.width or y<self.height:
 
-            if self.check_position(x,y)==self.player_object and self.item_map[y][x]!=self.void:
-                self.place_object(x,y, self.item_map[y][x])
+            if self.check_position(x,y)==self.player_object and self.item_map[y,x]!=self.void:
+                self.place_object(x,y, self.item_map[y,x])
             else:
-                self.place_object(x,y,self.void)
-                self.item_map[y][x]=self.void
+                self.place_object(x,y,self.floor)
+                self.item_map[y,x]=self.void
 
         else:
             self.buffer.write_buffer_line(0, f"Position out of range.\nX: {x}\t Y: {y}\nMax X: {self.width}\tMax Y: {self.height}")
@@ -198,7 +226,7 @@ class Map:
         self.cursor.pos(1,1)
         for y in range(1,self.height):
             for x in range(1,self.width):
-                self.buffer.write(self.object_key(map_[y][x]), flush=False)
+                self.buffer.write(self.object_key(map_[y,x]), flush=False)
             self.buffer.write("\n", flush=False)
         self.buffer.flush()
         
@@ -207,3 +235,7 @@ class Map:
 
         self.cursor.pos(1, self.height+1)
         self.buffer.save_buffer_line(self.cursor.x, self.cursor.y)
+
+if __name__=="__main__":
+    import RPG_main
+    RPG_main.main()
