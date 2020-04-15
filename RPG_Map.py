@@ -1,15 +1,15 @@
 import numpy as np
 import sys
 import subprocess
-import Position
+import RPG_Position
 import shutil
 import random
-import Buffer
+import RPG_Buffer
 
 def clear_screen():
     OS=sys.platform
     subprocess.run("cls" if OS=="win32" else "clear", shell=True)
-    Position.pos(1,1)
+    RPG_Position.pos(1,1)
 
 class interactable_objects:
     def __init__(self):

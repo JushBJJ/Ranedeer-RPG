@@ -1,5 +1,5 @@
 import sys
-from Map import clear_screen
+from RPG_Map import clear_screen
 
 class get_key:
 	def __init__(self):

@@ -1,6 +1,6 @@
 import sys
-import Input
-from Map import clear_screen
+import RPG_Input
+from RPG_Map import clear_screen
 
 class Player:
     def __init__(self, map_, buffer, cursor):
@@ -69,7 +69,7 @@ Other:
         self.buffer.write("Press Q to exit.")
 
         while True:
-            if Input.get_c(self.buffer)==7:
+            if RPG_Input.get_c(self.buffer)==7:
                 self.map.draw_map(self.map.map)
                 return True
 
@@ -82,12 +82,11 @@ Other:
         elif self.last_face==2: x=self.x-1
         elif self.last_face==3: x=self.x+1
 
-        object_on_top=self.map.item_map[self.y][self.x]
-        object=self.map.item_map[y][x]
-        self.buffer.clear_buffer_line(1)
+        object_on_top=self.map.item_map[self.y,self.x]
+        object=self.map.item_map[y,x]
 
-        if object in self.map.interactables.values() or object_on_top in self.map.interactables.values():
-            if object_on_top in self.map.interactables.values():
+        if object in self.map.interactables.keys() or object_on_top in self.map.interactables.keys():
+            if object_on_top in self.map.interactables.keys():
                 in_inventory, info=self.map.interact(self.x, self.y)
             else:
                 in_inventory, info=self.map.interact(x,y)
@@ -97,12 +96,11 @@ Other:
                     self.buffer.write_buffer_line(0, "Item already in your inventory.")
                 else:
                     self.inventory[info["Name"]]=info
-                    self.buffer.write_buffer_line(1, str(bool(object_on_top not in self.map.interactables.values())))
 
-                    if object_on_top not in self.map.interactables.values():
+                    if object_on_top not in self.map.interactables.keys():
                         self.map.remove_object(x,y)  
                     else:
-                        self.map.item_map[self.y][self.x]=0
+                        self.map.item_map[self.y,self.x]=0
 
                     self.buffer.write_buffer_line(0, "Collected Item.")
         else:
@@ -118,7 +116,7 @@ Other:
         self.buffer.write("Press Q to exit.")
 
         while True:
-            if Input.get_c(self.buffer)==7:
+            if RPG_Input.get_c(self.buffer)==7:
                 self.map.draw_map(self.map.map)
                 return True
 
@@ -127,3 +125,7 @@ Other:
     def quit(self):
         clear_screen()
         sys.exit(0)
+    
+if __name__=="__main__":
+    import RPG_main
+    RPG_main.main()
