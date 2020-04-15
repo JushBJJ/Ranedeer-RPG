@@ -6,11 +6,16 @@ import shutil
 import random
 import RPG_Buffer
 import time
-import multiprocessing
+import colorama
 
 def clear_screen():
     OS=sys.platform
-    subprocess.run("cls" if OS=="win32" else "clear", shell=True)
+    RPG_Position.pos(1,1)
+    if OS=="win32":
+        colorama.winterm.WinTerm().erase_screen()
+    else:
+        sys.stdout.write("\033[2J")
+    
     RPG_Position.pos(1,1)
 
 def print_loading(msg):

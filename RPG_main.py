@@ -5,9 +5,10 @@ import RPG_Map
 import RPG_Position
 import RPG_Buffer
 import multiprocessing
+import sys
 
 def main():
-    colorama.init()
+    colorama.init(wrap=True, convert=True)
     RPG_Map.clear_screen()
 
     p=multiprocessing.Process(target=RPG_Map.print_loading, args=("Loading...",))
@@ -26,6 +27,7 @@ def main():
     Town.buffer.write_buffer_line(0, "WASD or Arrow keys to move  |  Press C to show controls")
     player.spawn()
     
+    #sys.stdout.write("\033[1049l") <--- lol
     while True:
         player.Move_Player(RPG_Input.get_c(Buffer))
 

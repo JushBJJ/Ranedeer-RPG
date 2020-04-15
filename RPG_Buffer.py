@@ -1,9 +1,9 @@
 import sys
+import colorama
 
 class Buffer:
     def __init__(self, cursor, F=sys.stdout):
         self.buffer=F
-        self.buffer_X="\r"
         self.cursor=cursor
 
         self.buffers={}
@@ -20,8 +20,10 @@ class Buffer:
         line=str(line)
         self.cursor.load_pos(line)
 
-        for _ in self.buffers[line]:
-            self.write(" "*2)
+        if sys.platform=="win32":
+            colorama.winterm.WinTerm().erase_line()
+        else:
+            self.buffer.write(colorama.ansi.clear_line())
 
         self.buffers[line]=""
 

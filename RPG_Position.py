@@ -4,7 +4,7 @@ up=lambda n=1: print(Cursor.UP(n), end="")
 down=lambda n=1: print(Cursor.DOWN(n), end="")
 left=lambda n=1: print(Cursor.BACK(n), end="")
 right=lambda n=1: print(Cursor.FORWARD(n), end="")
-pos=lambda x,y: print(f"\033[{y};{x}H", end="")
+pos=lambda x,y: print(Cursor.POS(x,y), end="")
 
 class cursor:
     def __init__(self):
