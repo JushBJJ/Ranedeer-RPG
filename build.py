@@ -7,11 +7,11 @@ run_flags=[
         "--console",
         "--clean",
         "--onefile",
-        "main.py",
-        "Input.py",
-        "Map.py",
-        "Player.py",
-        "Position.py"
+        "RPG_main.py",
+        "RPG_Input.py",
+        "RPG_Map.py",
+        "RPG_Player.py",
+        "RPG_Position.py"
     ]
 
 if sys.platform=="linux":
