@@ -5,11 +5,25 @@ import RPG_Position
 import shutil
 import random
 import RPG_Buffer
+import time
+import multiprocessing
 
 def clear_screen():
     OS=sys.platform
     subprocess.run("cls" if OS=="win32" else "clear", shell=True)
     RPG_Position.pos(1,1)
+
+def print_loading(msg):
+    c=spinning_cursor()
+
+    while True:
+        sys.stdout.write(f"\r{msg}{next(c)}")  
+
+def spinning_cursor():
+    while True:
+        for cursor in "|/-\\":
+            time.sleep(0.05)
+            yield cursor
 
 class interactable_objects:
     def __init__(self):
@@ -36,7 +50,7 @@ class interactable_objects:
         return False, None
     
 class Map:
-    def __init__(self, cursor, buffer):
+    def __init__(self, cursor, buffer, dungeon=True):
         info=shutil.get_terminal_size()
     
         self.width=info.columns
@@ -60,18 +74,43 @@ class Map:
         self.items=interactable_objects()
         self.interactables=self.items.interactables
 
-        self.generate_new_map()
+        if dungeon==False:
+            self.sword_shop_room=np.zeros((5,5), dtype=np.int)
+            self.sword_shop_room.fill(self.floor)
+            self.sword_shop_room=np.pad(self.sword_shop_room, (1,1), constant_values=self.borders)
+
+            self.armour_shop_room=np.array(self.sword_shop_room)
+            self.food_shop_room=np.array(self.sword_shop_room)
+
+            self.quests_building_room=np.zeros((8,8), dtype=np.int)
+            self.quests_building_room.fill(self.floor)
+            self.quests_building_room=np.pad(self.quests_building_room, (1,1), constant_values=self.borders)
+            self.tavern_building_room=np.array(self.quests_building_room)
+            
+            # (Array, Created/Spawned)
+            self.buildings={
+                "Sword Shop":self.sword_shop_room,
+                "Armour Shop":self.armour_shop_room,
+                "Food Shop":self.food_shop_room,
+                "Quests Building":self.quests_building_room,
+                "Tavern Building":self.tavern_building_room         
+            }
+
+        self.generate_new_map(dungeon)
     
-    def generate_new_map(self):
+    def generate_new_map(self, dungeon=True):
         # Generate Borders
         self.map.fill(self.void)
         self.map=np.pad(self.map, (1,1), constant_values=self.void)
-    
+
         # Generate Different rooms
         i=0
-        for _ in range(300):
-            if self.add_room(i):
+        for _ in range(10):
+            ret=self.add_room(i, dungeon=dungeon)
+            if ret==True:
                 i+=1
+            elif ret==3:
+                break
         
         # Connect all rooms
         self.join_rooms()
@@ -81,16 +120,32 @@ class Map:
         # TODO: Randomized Player spawn
         # TODO: Generate Town
 
-    def add_room(self, id):
+    def add_room(self, id, **kwargs):
         i=0
         j=0
 
-        room_width=random.randrange(4,6)
-        room_height=random.randrange(6,10)
+        dungeon=True
 
-        room=np.zeros((room_height, room_width), dtype=np.int)
-        room.fill(self.floor)
-        room=np.pad(room, (1,1), constant_values=self.borders)
+        for arg, value in kwargs.items():
+            if arg=="dungeon":
+                dungeon=value
+
+        if dungeon==True:
+            room_width=random.randrange(4,6) 
+            room_height=random.randrange(6,10)
+
+            room=np.zeros((room_height, room_width), dtype=np.int)
+            room.fill(self.floor)
+            room=np.pad(room, (1,1), constant_values=self.borders)
+
+        else:
+            if id>=len(self.buildings.keys()):
+                return 3
+            
+            building_name=list(self.buildings.keys())[id]
+            building=self.buildings[building_name]
+
+            room=building
 
         room_x=random.randrange(1, self.width-room.shape[1])
         room_y=random.randrange(1, self.height-room.shape[0])
@@ -106,7 +161,7 @@ class Map:
         for y in range(room_y, room_y+room.shape[0]):
             i=0
             for x in range(room_x, room_x+room.shape[1]):
-                if j==1 and i==1:
+                if j==2 and i==2:
                     self.rooms[id]={"x":x,"y":y}
                 self.map[y,x]=room[j,i]
                 i+=1

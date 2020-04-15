@@ -10,13 +10,15 @@ class Player:
         self.last_face=0
 
         self.map=map_
-        self.map.place_object(self.x, self.y, 2)
 
         self.buffer=buffer
         self.cursor=cursor
 
         self.cursor.pos(self.x, self.y)
         self.inventory={}
+
+    def spawn(self):
+        self.map.place_object(self.x, self.y, 2)
 
     def Move_Player(self, n):
         reprint_top=False
