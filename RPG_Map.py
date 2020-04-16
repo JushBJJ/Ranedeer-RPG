@@ -155,7 +155,7 @@ class Map:
         room_x=random.randrange(1, self.width-room.shape[1])
         room_y=random.randrange(1, self.height-room.shape[0])
 
-        if self.width-room.shape[1]-1<=0 or self.height-room.shape[1]-1<=0:
+        if self.width-room.shape[0]-1<=0 or self.height-room.shape[1]-1<=0:
             return False
 
         for y in range(room_y, room_y+room.shape[0]):
