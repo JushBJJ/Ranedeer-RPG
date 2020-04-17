@@ -1,24 +1,32 @@
 import sys
+import random
 import RPG_Input
 from RPG_Map import clear_screen
 
 class Player:
-    def __init__(self, map_, buffer, cursor):
+    def __init__(self, world, map_, buffer, cursor):
         self.x=map_.rooms[0]["x"]
         self.y=map_.rooms[0]["y"]
 
         self.last_face=0
-
+        self.last_map="Town"
         self.map=map_
 
         self.buffer=buffer
         self.cursor=cursor
+        self.world=world
 
         self.cursor.pos(self.x, self.y)
         self.inventory={}
+        self.map=None
 
-    def spawn(self):
-        self.map.place_object(self.x, self.y, 2)
+    def spawn(self, current_map):
+        self.map=current_map
+
+        self.x=self.map.teleporter_location["x"]
+        self.y=self.map.teleporter_location["y"]
+
+        self.map.place_object(self.x, self.y, self.map.player_object)
 
     def Move_Player(self, n):
         reprint_top=False
@@ -29,7 +37,7 @@ class Player:
         if n in positions.keys():
             del self.map.objects[positions[self.last_face][2]]
             self.last_face=n
-            self.map.objects[positions[self.last_face][2]]=2
+            self.map.objects[positions[self.last_face][2]]=self.map.player_object
 
             object=self.map.check_position(positions[n][0], positions[n][1])
 
@@ -39,9 +47,34 @@ class Player:
                 self.x=positions[n][0]
                 self.y=positions[n][1]
 
-                self.map.place_object(self.x, self.y, 2)
+                self.map.place_object(self.x, self.y, self.map.player_object)
+
+                if object==self.map.dungeon_teleporter:
+                    if self.last_map=="Dungeon":
+                        self.world.set_current_map("Town")
+                        self.last_map="Town"
+                    elif self.last_map=="Town":
+                        self.world.set_current_map("Dungeon")
+                        self.last_map="Dungeon"  
+                    else:
+                        self.world.set_current_map("Town")    
+                        self.last_map="Town"    
+                    
+                    del self.map.objects[positions[self.last_face][2]]
+                    self.map.objects["^"]=self.map.player_object
+                    
+                    self.map=self.world.get_current_map()["class"]
+
+                    del self.map.objects["^"]
+                    self.map.objects[positions[self.last_face][2]]=self.map.player_object
+
+                    self.x=self.map.teleporter_location["x"]
+                    self.y=self.map.teleporter_location["y"]
+                    
+                    self.map.draw_map()
+                    self.spawn(self.map)
             else:
-                self.map.place_object(self.x, self.y, 2)
+                self.map.place_object(self.x, self.y, self.map.player_object)
                 return # More cheaper
             
         elif n in controls.keys():
@@ -72,7 +105,7 @@ Other:
 
         while True:
             if RPG_Input.get_c(self.buffer)==7:
-                self.map.draw_map(self.map.map)
+                self.map.draw_map()
                 return True
 
     def interact(self):
@@ -119,7 +152,7 @@ Other:
 
         while True:
             if RPG_Input.get_c(self.buffer)==7:
-                self.map.draw_map(self.map.map)
+                self.map.draw_map()
                 return True
 
         # TODO Add equip
