@@ -29,7 +29,7 @@ class World:
     
     def switch_map(self, name):
         self.set_current_map(name)
-        return get_current_map()
+        return self.get_current_map()
 
     def get_current_map(self):
         return self.current_map

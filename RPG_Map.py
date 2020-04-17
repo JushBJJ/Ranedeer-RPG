@@ -185,8 +185,6 @@ class Map:
                             self.map[y,x]=self.dungeon_teleporter
 
                             self.draw_map()
-                            import time
-                            time.sleep(5)
 
                 self.map[y,x]=room[j,i]
                 i+=1
